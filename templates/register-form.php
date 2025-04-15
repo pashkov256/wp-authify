@@ -1,4 +1,5 @@
 <?php
+
 if (!defined('ABSPATH')) {
     exit;
 }
@@ -17,12 +18,6 @@ if (!defined('ABSPATH')) {
         <div class="form-group">
             <label for="user_login"><?php _e('Имя пользователя', 'wp-authify'); ?></label>
             <input type="text" name="user_login" id="user_login" class="form-control" required>
-            <span class="form-text"><?php _e('Имя пользователя должно содержать только буквы, цифры и знаки подчеркивания', 'wp-authify'); ?></span>
-        </div>
-
-        <div class="form-group">
-            <label for="user_email"><?php _e('Email', 'wp-authify'); ?></label>
-            <input type="email" name="user_email" id="user_email" class="form-control" required>
         </div>
 
         <div class="form-group">

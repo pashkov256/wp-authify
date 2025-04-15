@@ -17,7 +17,7 @@ $redirect_to = isset($_GET['redirect_to']) ? $_GET['redirect_to'] : home_url();
         </div>
 
         <div class="form-group">
-            <label for="user_login"><?php _e('Имя пользователя или Email', 'wp-authify'); ?></label>
+            <label for="user_login"><?php _e('Имя пользователя', 'wp-authify'); ?></label>
             <input type="text" name="user_login" id="user_login" class="form-control" required>
         </div>
 

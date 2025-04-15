@@ -46,7 +46,7 @@ class WP_Authify {
         // Обработка действий
         if (isset($_POST['action']) && check_admin_referer('wp_authify_action')) {
             if ($_POST['action'] === 'block_user') {
-                $this->block_user($_POST['user_id'], get_current_user_id(), $_POST['reason']);
+                $this->block_user($_POST['user_id'], get_current_user_id());
             } elseif ($_POST['action'] === 'unblock_user') {
                 $this->unblock_user($_POST['user_id']);
             }
@@ -69,7 +69,7 @@ class WP_Authify {
 
     public function ajax_search_users() {
         check_ajax_referer('wp_authify_search_users', 'nonce');
-
+        
         if (!current_user_can('manage_options')) {
             wp_send_json_error('Unauthorized');
         }
@@ -78,25 +78,24 @@ class WP_Authify {
         
         $args = array(
             'search' => '*' . $query . '*',
-            'search_columns' => array('user_login', 'user_email', 'display_name'),
+            'search_columns' => array('user_login', 'display_name'),
             'exclude' => array(get_current_user_id()),
+            'number' => 10,
             'orderby' => 'display_name',
-            'order' => 'ASC',
-            'number' => 10
+            'order' => 'ASC'
         );
 
-        $user_search = new WP_User_Query($args);
-        $users = $user_search->get_results();
-
+        $user_query = new WP_User_Query($args);
+        $users = $user_query->get_results();
+        
         $results = array();
         foreach ($users as $user) {
             $results[] = array(
                 'ID' => $user->ID,
-                'display_name' => $user->display_name,
-                'user_email' => $user->user_email
+                'display_name' => $user->display_name
             );
         }
-
+        
         wp_send_json_success($results);
     }
 
@@ -147,10 +146,9 @@ class WP_Authify {
         }
 
         $user_login = sanitize_user($_POST['user_login']);
-        $user_email = sanitize_email($_POST['user_email']);
         $user_pass = $_POST['user_pass'];
 
-        $user_id = wp_create_user($user_login, $user_pass, $user_email);
+        $user_id = wp_create_user($user_login, $user_pass, '');
 
         if (is_wp_error($user_id)) {
             wp_die($user_id->get_error_message());
@@ -160,7 +158,7 @@ class WP_Authify {
         exit;
     }
 
-    public function block_user($user_id, $blocked_by, $reason = '') {
+    public function block_user($user_id, $blocked_by) {
         global $wpdb;
         $table_name = $wpdb->prefix . 'authify_blocked_users';
         
@@ -168,10 +166,9 @@ class WP_Authify {
             $table_name,
             array(
                 'user_id' => $user_id,
-                'blocked_by' => $blocked_by,
-                'reason' => $reason
+                'blocked_by' => $blocked_by
             ),
-            array('%d', '%d', '%s')
+            array('%d', '%d')
         );
     }
 
@@ -199,7 +196,7 @@ class WP_Authify {
             if ($is_blocked) {
                 return new WP_Error(
                     'user_blocked',
-                    __('Этот аккаунт заблокирован. Пожалуйста, свяжитесь с администратором.', 'wp-authify')
+                    __('Этот аккаунт заблокирован.', 'wp-authify')
                 );
             }
         }

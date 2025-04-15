@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
                 <div class="search-type-selector">
                     <label class="radio-label">
                         <input type="radio" name="search_type" value="input" checked>
-                        <span><?php _e('Поиск по имени/email', 'wp-authify'); ?></span>
+                        <span><?php _e('Поиск по логину', 'wp-authify'); ?></span>
                     </label>
                     <label class="radio-label">
                         <input type="radio" name="search_type" value="select">
@@ -29,7 +29,7 @@ if (!defined('ABSPATH')) {
 
             <div class="form-group search-input-group">
                 <label for="user_search"><?php _e('Поиск пользователя', 'wp-authify'); ?></label>
-                <input type="text" id="user_search" class="regular-text" placeholder="<?php _e('Введите имя пользователя или email...', 'wp-authify'); ?>">
+                <input type="text" id="user_search" class="regular-text" placeholder="<?php _e('Введите логин пользователя...', 'wp-authify'); ?>">
                 <div id="user_search_results" class="search-results"></div>
             </div>
 
@@ -45,11 +45,6 @@ if (!defined('ABSPATH')) {
                 ));
                 ?>
             </div>
-
-            <div class="form-group">
-                <label for="reason"><?php _e('Причина блокировки', 'wp-authify'); ?></label>
-                <textarea name="reason" id="reason" rows="3" class="large-text"></textarea>
-            </div>
             
             <?php submit_button(__('Заблокировать пользователя', 'wp-authify')); ?>
         </form>
@@ -59,7 +54,7 @@ if (!defined('ABSPATH')) {
         <h2><?php _e('Заблокированные пользователи', 'wp-authify'); ?></h2>
         
         <div class="table-search">
-            <input type="text" id="table_search" class="regular-text" placeholder="<?php _e('Поиск по имени, email или причине...', 'wp-authify'); ?>">
+            <input type="text" id="table_search" class="regular-text" placeholder="<?php _e('Поиск по логину...', 'wp-authify'); ?>">
         </div>
 
         <table class="wp-list-table widefat fixed striped">
@@ -68,7 +63,6 @@ if (!defined('ABSPATH')) {
                     <th><?php _e('Пользователь', 'wp-authify'); ?></th>
                     <th><?php _e('Заблокирован', 'wp-authify'); ?></th>
                     <th><?php _e('Дата', 'wp-authify'); ?></th>
-                    <th><?php _e('Причина', 'wp-authify'); ?></th>
                     <th><?php _e('Действия', 'wp-authify'); ?></th>
                 </tr>
             </thead>
@@ -79,7 +73,6 @@ if (!defined('ABSPATH')) {
                             <td><?php echo esc_html($user->blocked_user_name); ?></td>
                             <td><?php echo esc_html($user->blocked_by_name); ?></td>
                             <td><?php echo esc_html($user->blocked_date); ?></td>
-                            <td><?php echo esc_html($user->reason); ?></td>
                             <td>
                                 <form method="post" action="" style="display:inline;">
                                     <?php wp_nonce_field('wp_authify_action'); ?>
@@ -92,7 +85,7 @@ if (!defined('ABSPATH')) {
                     <?php endforeach; ?>
                 <?php else : ?>
                     <tr>
-                        <td colspan="5"><?php _e('Заблокированных пользователей не найдено.', 'wp-authify'); ?></td>
+                        <td colspan="4"><?php _e('Заблокированных пользователей не найдено.', 'wp-authify'); ?></td>
                     </tr>
                 <?php endif; ?>
             </tbody>
@@ -223,7 +216,7 @@ jQuery(document).ready(function($) {
                         var html = '';
                         response.data.forEach(function(user) {
                             html += '<div class="search-result-item" data-id="' + user.ID + '" data-name="' + user.display_name + '">' +
-                                   user.display_name + ' (' + user.user_email + ')' +
+                                   user.display_name +
                                    '</div>';
                         });
                         $searchResults.html(html).addClass('active');
